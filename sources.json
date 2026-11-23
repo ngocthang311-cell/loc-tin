@@ -1,0 +1,13 @@
+[
+  { "name": "VnExpress",     "url": "https://vnexpress.net/rss/tin-moi-nhat.rss",               "group": "vn" },
+  { "name": "Tuổi Trẻ",      "url": "https://tuoitre.vn/rss/tin-moi-nhat.rss",                  "group": "vn" },
+  { "name": "Thanh Niên",    "url": "https://thanhnien.vn/rss/home.rss",                         "group": "vn" },
+  { "name": "Dân Trí",       "url": "https://dantri.com.vn/rss/home.rss",                        "group": "vn" },
+  { "name": "Tiền Phong",    "url": "https://tienphong.vn/rss/home.rss",                         "group": "vn" },
+  { "name": "CafeF",         "url": "https://cafef.vn/home.rss",                                 "group": "vn" },
+  { "name": "GenK",          "url": "https://genk.vn/rss/home.rss",                              "group": "vn" },
+  { "name": "BBC Tiếng Việt","url": "https://feeds.bbci.co.uk/vietnamese/rss.xml",               "group": "vn" },
+  { "name": "Google News",   "url": "https://news.google.com/rss?hl=vi&gl=VN&ceid=VN:vi",        "group": "hot" },
+  { "name": "Hacker News",   "url": "https://hnrss.org/frontpage",                               "group": "intl" },
+  { "name": "Google Trends", "url": "https://trends.google.com/trending/rss?geo=VN",              "group": "trends" }
+]
