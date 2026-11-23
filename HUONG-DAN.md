@@ -38,14 +38,24 @@ Máy tính của bạn **không cần bật**.
 - **Android (Chrome):** mở link, bấm ⋮, chọn **Thêm vào màn hình chính**.
 
 ## Cách dùng
-- **Nóng**: những sự kiện có từ 2 nguồn trở lên cùng đưa tin, nhiều nguồn nhất xếp trước.
-- **Mới nhất**: tất cả tin, mỗi sự kiện chỉ hiện một lần. Bấm "+ N bài cùng sự kiện" để xem các báo khác viết gì.
-- **Theo dõi**: tin chứa từ khóa bạn đặt ở tab Cài đặt (không cần gõ dấu).
-- **Xu hướng**: những từ khóa người Việt đang tìm nhiều nhất trên Google, kèm bài báo liên quan.
-- **Cài đặt**: thêm từ khóa theo dõi, từ khóa chặn (ẩn tin), xem tình trạng từng nguồn tin.
-- Bấm vào tên báo ở hàng nút trên cùng để tắt hoặc bật nguồn đó.
+- **Bộ lọc**: tìm trong tiêu đề, chọn thời gian (Hôm nay / 24 giờ / 2 ngày), chọn báo, cách sắp xếp, và "Chỉ tin chưa đọc".
+- **Các mục**: Tất cả · 🔥 Nhiều báo đưa (sự kiện có từ 2 báo trở lên cùng đưa tin) · các chuyên mục (Thời sự, Kinh tế, Viễn thông…) · 📈 Xu hướng tìm kiếm · ⭐ Đã ghim.
+- Mỗi sự kiện chỉ hiện một lần. Bấm "+ N bài cùng sự kiện" để xem các báo khác viết gì. Bấm ☆ để ghim tin đọc sau.
+- **⚙ Cài đặt**: thêm từ khóa theo dõi (có mục "👁 Theo dõi" riêng), thêm từ khóa chặn để ẩn tin, xem tình trạng từng nguồn tin.
+- GitHub tự lấy tin **mỗi giờ một lần**. Khi đang mở, trang tự tải lại bản tin mới nhất mỗi 10 phút.
 
-> Lưu ý: từ khóa và danh sách tin đã đọc được lưu **riêng trên từng thiết bị**. Bạn cần nhập từ khóa một lần trên điện thoại và một lần trên máy tính.
+> Lưu ý: từ khóa, tin đã ghim và danh sách tin đã đọc được lưu **riêng trên từng thiết bị**.
+
+## Bấm ↻ Tải lại để lấy tin mới ngay (tùy chọn)
+Nếu không làm bước này, nút ↻ chỉ tải lại bản tin mà GitHub lấy gần nhất. Muốn bấm là GitHub đi lấy tin mới ngay (mất khoảng 1–2 phút), bạn cần tạo một mã GitHub:
+1. Mở https://github.com/settings/personal-access-tokens/new
+2. **Token name**: `loc-tin`. **Expiration**: chọn thời hạn, ví dụ 1 năm (hết hạn thì tạo mã mới).
+3. **Repository access**: chọn **Only select repositories**, rồi chọn `loc-tin`.
+4. **Permissions → Repository permissions → Actions**: chọn **Read and write**. Các quyền khác giữ nguyên.
+5. Bấm **Generate token**, rồi copy mã (bắt đầu bằng `github_pat_`).
+6. Mở trang Lọc Tin, vào **⚙ Cài đặt**, dán mã vào ô "Lấy tin mới ngay khi bấm Tải lại", rồi bấm **Lưu**. Làm lần lượt trên từng thiết bị.
+
+Mã chỉ được lưu trong trình duyệt của bạn, không đưa lên trang web. Mã này chỉ có quyền chạy việc lấy tin của kho `loc-tin`. Đừng gửi mã cho người khác.
 
 ## Lưu ý khác
 - Nếu repo không có hoạt động nào trong 60 ngày, GitHub có thể tự tắt lịch chạy và gửi email báo. Khi đó chỉ cần vào tab Actions bấm bật lại.
