@@ -1,13 +1,93 @@
-[
-  { "name": "VnExpress",     "url": "https://vnexpress.net/rss/tin-moi-nhat.rss",               "group": "vn" },
-  { "name": "Tuổi Trẻ",      "url": "https://tuoitre.vn/rss/tin-moi-nhat.rss",                  "group": "vn" },
-  { "name": "Thanh Niên",    "url": "https://thanhnien.vn/rss/home.rss",                         "group": "vn" },
-  { "name": "Dân Trí",       "url": "https://dantri.com.vn/rss/home.rss",                        "group": "vn" },
-  { "name": "Tiền Phong",    "url": "https://tienphong.vn/rss/home.rss",                         "group": "vn" },
-  { "name": "CafeF",         "url": "https://cafef.vn/home.rss",                                 "group": "vn" },
-  { "name": "GenK",          "url": "https://genk.vn/rss/home.rss",                              "group": "vn" },
-  { "name": "BBC Tiếng Việt","url": "https://feeds.bbci.co.uk/vietnamese/rss.xml",               "group": "vn" },
-  { "name": "Google News",   "url": "https://news.google.com/rss?hl=vi&gl=VN&ceid=VN:vi",        "group": "hot" },
-  { "name": "Hacker News",   "url": "https://hnrss.org/frontpage",                               "group": "intl" },
-  { "name": "Google Trends", "url": "https://trends.google.com/trending/rss?geo=VN",              "group": "trends" }
-]
+{
+  "categories": [
+    { "id": "thoi-su",    "name": "Thời sự" },
+    { "id": "the-gioi",   "name": "Thế giới" },
+    { "id": "kinh-te",    "name": "Kinh tế" },
+    { "id": "xa-hoi",     "name": "Xã hội" },
+    { "id": "phap-luat",  "name": "Pháp luật" },
+    { "id": "giao-duc",   "name": "Giáo dục" },
+    { "id": "suc-khoe",   "name": "Sức khỏe" },
+    { "id": "the-thao",   "name": "Thể thao" },
+    { "id": "giai-tri",   "name": "Phim ảnh - Giải trí" },
+    { "id": "cong-nghe",  "name": "Công nghệ - Chuyển đổi số" },
+    { "id": "vien-thong", "name": "Viễn thông" }
+  ],
+
+  "keywords": {
+    "vien-thong": ["internet", "wifi", "wi fi", "nha cung cap dich vu internet", "viettel", "vnpt", "mobifone", "vinaphone", "nha mang", "vien thong", "5g", "4g", "thue bao di dong", "thue bao tra truoc", "sim", "cap quang", "bang tan", "tan so", "starlink", "roaming", "cuoc di dong", "cuoc internet", "fpt telecom", "cap bien", "toc do mang", "song di dong", "tram bts"],
+    "cong-nghe": ["cong nghe", "chuyen doi so", "so hoa", "=AI", "tri tue nhan tao", "chatgpt", "openai", "iphone", "smartphone", "dien thoai", "chip", "ban dan", "du lieu", "an ninh mang", "tin tac", "hacker", "apple", "samsung", "google", "microsoft", "robot", "phan mem", "blockchain", "dien toan dam may", "startup", "xe dien", "vneid", "ma doc"],
+    "giao-duc": ["hoc sinh", "sinh vien", "giao vien", "tuyen sinh", "thi tot nghiep", "dai hoc", "hoc phi", "truong hoc", "bo gd dt", "giao duc", "hoc bong", "diem chuan", "ky thi", "du hoc", "mam non"],
+    "the-thao": ["bong da", "doi tuyen", "cau thu", "hlv", "v league", "sea games", "world cup", "pickleball", "tennis", "ngoai hang anh", "champions league", "vo dich", "tran dau", "ban thang", "olympic", "aff cup", "futsal", "bong chuyen"],
+    "giai-tri": ["phim", "dien vien", "ca si", "hoa hau", "showbiz", "mv", "concert", "phong ve", "dien anh", "netflix", "nghe si", "sao viet", "am nhac", "liveshow", "rap viet", "kpop"],
+    "phap-luat": ["cong an", "bat giu", "khoi to", "xet xu", "tuyen an", "lua dao", "truy na", "vu an", "toa an", "tam giam", "dieu tra", "ma tuy", "bi can", "bi cao", "vien kiem sat"],
+    "suc-khoe": ["benh vien", "bac si", "benh nhan", "vaccine", "vac xin", "ung thu", "ngo doc", "dich benh", "suc khoe", "cap cuu", "y te", "sot xuat huyet"],
+    "kinh-te": ["gia vang", "chung khoan", "ngan hang", "lai suat", "ty gia", "doanh nghiep", "bat dong san", "xuat khau", "gdp", "co phieu", "vn index", "lam phat", "gia xang", "thue thu nhap", "dau tu", "tong giam doc"],
+    "the-gioi": ["ukraine", "israel", "iran", "trung quoc", "nhat ban", "han quoc", "lien hop quoc", "nato", "dien kremlin", "tong thong", "gaza", "chau au", "trieu tien", "thai lan", "campuchia", "philippines", "putin", "trump"],
+    "xa-hoi": ["giao thong", "tai nan", "chay nha", "hoa hoan", "mua lu", "ngap", "sat lo", "thoi tiet", "khong khi lanh", "bao so", "nguoi dan", "tu thien", "doi song", "o nhiem"],
+    "thoi-su": ["tong bi thu", "thu tuong", "quoc hoi", "chu tich nuoc", "bo chinh tri", "chinh phu", "trung uong", "dai hoi dang", "pho thu tuong", "nghi quyet", "chu tich ubnd"]
+  },
+
+  "sources": [
+    { "name": "VnExpress", "group": "vn", "feeds": [
+      { "url": "https://vnexpress.net/rss/tin-moi-nhat.rss" },
+      { "url": "https://vnexpress.net/rss/thoi-su.rss",            "cat": "thoi-su" },
+      { "url": "https://vnexpress.net/rss/the-gioi.rss",           "cat": "the-gioi" },
+      { "url": "https://vnexpress.net/rss/kinh-doanh.rss",         "cat": "kinh-te" },
+      { "url": "https://vnexpress.net/rss/phap-luat.rss",          "cat": "phap-luat" },
+      { "url": "https://vnexpress.net/rss/giao-duc.rss",           "cat": "giao-duc" },
+      { "url": "https://vnexpress.net/rss/suc-khoe.rss",           "cat": "suc-khoe" },
+      { "url": "https://vnexpress.net/rss/the-thao.rss",           "cat": "the-thao" },
+      { "url": "https://vnexpress.net/rss/giai-tri.rss",           "cat": "giai-tri" },
+      { "url": "https://vnexpress.net/rss/doi-song.rss",           "cat": "xa-hoi" },
+      { "url": "https://vnexpress.net/rss/so-hoa.rss",             "cat": "cong-nghe" },
+      { "url": "https://vnexpress.net/rss/khoa-hoc-cong-nghe.rss", "cat": "cong-nghe" }
+    ]},
+    { "name": "Tuổi Trẻ", "group": "vn", "feeds": [
+      { "url": "https://tuoitre.vn/rss/tin-moi-nhat.rss" },
+      { "url": "https://tuoitre.vn/rss/thoi-su.rss",    "cat": "thoi-su" },
+      { "url": "https://tuoitre.vn/rss/the-gioi.rss",   "cat": "the-gioi" },
+      { "url": "https://tuoitre.vn/rss/kinh-doanh.rss", "cat": "kinh-te" },
+      { "url": "https://tuoitre.vn/rss/phap-luat.rss",  "cat": "phap-luat" },
+      { "url": "https://tuoitre.vn/rss/giao-duc.rss",   "cat": "giao-duc" },
+      { "url": "https://tuoitre.vn/rss/suc-khoe.rss",   "cat": "suc-khoe" },
+      { "url": "https://tuoitre.vn/rss/the-thao.rss",   "cat": "the-thao" },
+      { "url": "https://tuoitre.vn/rss/giai-tri.rss",   "cat": "giai-tri" },
+      { "url": "https://tuoitre.vn/rss/xa-hoi.rss",     "cat": "xa-hoi" },
+      { "url": "https://tuoitre.vn/rss/cong-nghe.rss",  "cat": "cong-nghe" }
+    ]},
+    { "name": "Thanh Niên", "group": "vn", "feeds": [
+      { "url": "https://thanhnien.vn/rss/home.rss" },
+      { "url": "https://thanhnien.vn/rss/thoi-su.rss",   "cat": "thoi-su" },
+      { "url": "https://thanhnien.vn/rss/chinh-tri.rss", "cat": "thoi-su" },
+      { "url": "https://thanhnien.vn/rss/the-gioi.rss",  "cat": "the-gioi" },
+      { "url": "https://thanhnien.vn/rss/kinh-te.rss",   "cat": "kinh-te" },
+      { "url": "https://thanhnien.vn/rss/doi-song.rss",  "cat": "xa-hoi" },
+      { "url": "https://thanhnien.vn/rss/giao-duc.rss",  "cat": "giao-duc" },
+      { "url": "https://thanhnien.vn/rss/suc-khoe.rss",  "cat": "suc-khoe" },
+      { "url": "https://thanhnien.vn/rss/the-thao.rss",  "cat": "the-thao" },
+      { "url": "https://thanhnien.vn/rss/giai-tri.rss",  "cat": "giai-tri" },
+      { "url": "https://thanhnien.vn/rss/cong-nghe.rss", "cat": "cong-nghe" }
+    ]},
+    { "name": "Dân Trí", "group": "vn", "feeds": [
+      { "url": "https://dantri.com.vn/rss/home.rss" },
+      { "url": "https://dantri.com.vn/rss/thoi-su.rss",    "cat": "thoi-su" },
+      { "url": "https://dantri.com.vn/rss/the-gioi.rss",   "cat": "the-gioi" },
+      { "url": "https://dantri.com.vn/rss/kinh-doanh.rss", "cat": "kinh-te" },
+      { "url": "https://dantri.com.vn/rss/phap-luat.rss",  "cat": "phap-luat" },
+      { "url": "https://dantri.com.vn/rss/giao-duc.rss",   "cat": "giao-duc" },
+      { "url": "https://dantri.com.vn/rss/suc-khoe.rss",   "cat": "suc-khoe" },
+      { "url": "https://dantri.com.vn/rss/the-thao.rss",   "cat": "the-thao" },
+      { "url": "https://dantri.com.vn/rss/giai-tri.rss",   "cat": "giai-tri" },
+      { "url": "https://dantri.com.vn/rss/doi-song.rss",   "cat": "xa-hoi" },
+      { "url": "https://dantri.com.vn/rss/cong-nghe.rss",  "cat": "cong-nghe" }
+    ]},
+    { "name": "Tiền Phong",     "group": "vn",   "feeds": [ { "url": "https://tienphong.vn/rss/home.rss" } ] },
+    { "name": "CafeF",          "group": "vn",   "feeds": [ { "url": "https://cafef.vn/home.rss", "cat": "kinh-te" } ] },
+    { "name": "GenK",           "group": "vn",   "feeds": [ { "url": "https://genk.vn/rss/home.rss", "cat": "cong-nghe" } ] },
+    { "name": "BBC Tiếng Việt", "group": "vn",   "feeds": [ { "url": "https://feeds.bbci.co.uk/vietnamese/rss.xml" } ] },
+    { "name": "Google News",    "group": "hot",  "feeds": [ { "url": "https://news.google.com/rss?hl=vi&gl=VN&ceid=VN:vi" } ] },
+    { "name": "Google News · Viễn thông", "group": "topic", "feeds": [ { "url": "https://news.google.com/rss/search?q=vi%E1%BB%85n%20th%C3%B4ng%20OR%20Viettel%20OR%20VNPT%20OR%20MobiFone%20OR%20Vinaphone%20OR%20%22nh%C3%A0%20m%E1%BA%A1ng%22%20OR%205G%20when%3A2d&hl=vi&gl=VN&ceid=VN:vi", "cat": "vien-thong" } ] },
+    { "name": "Hacker News",    "group": "intl", "feeds": [ { "url": "https://hnrss.org/frontpage", "cat": "cong-nghe" } ] },
+    { "name": "Google Trends",  "group": "trends", "feeds": [ { "url": "https://trends.google.com/trending/rss?geo=VN" } ] }
+  ]
+}
