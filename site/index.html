@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="referrer" content="no-referrer">
+<title>Lọc Tin</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e11d48'/%3E%3Ctext x='32' y='44' font-size='34' font-family='Arial' font-weight='700' fill='white' text-anchor='middle'%3ELT%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f6f7f9;--card:#fff;--text:#14171c;--muted:#667085;--line:#e4e7ec;
+  --accent:#e11d48;--accent-soft:#ffe4e9;--chip:#eef0f3;--hot:#f97316;--ok:#16a34a;
+  --shadow:0 1px 2px rgba(16,24,40,.06);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d1117;--card:#161b22;--text:#e6edf3;--muted:#8b949e;--line:#262c36;
+  --accent:#fb7185;--accent-soft:#3b1d25;--chip:#21262d;--hot:#fb923c;--ok:#4ade80;--shadow:none;
+}}
+:root[data-theme="dark"]{
+  --bg:#0d1117;--card:#161b22;--text:#e6edf3;--muted:#8b949e;--line:#262c36;
+  --accent:#fb7185;--accent-soft:#3b1d25;--chip:#21262d;--hot:#fb923c;--ok:#4ade80;--shadow:none;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.top{display:flex;align-items:center;gap:10px;padding:10px 0 8px}
+.logo{width:30px;height:30px;border-radius:8px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+h1{font-size:18px;margin:0;font-weight:750;letter-spacing:-.01em}
+.upd{font-size:12px;color:var(--muted)}
+.sp{flex:1}
+.ibtn{border:1px solid var(--line);background:var(--card);border-radius:10px;height:34px;min-width:34px;padding:0 10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:13px}
+.ibtn:hover{border-color:var(--muted)}
+.search{display:flex;gap:8px;padding-bottom:8px}
+.search input{flex:1;min-width:0;height:38px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:0 12px;outline:none}
+.search input:focus{border-color:var(--accent)}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:0;background:transparent;padding:7px 12px;border-radius:999px;cursor:pointer;color:var(--muted);font-weight:600;font-size:14px}
+.tab.on{background:var(--text);color:var(--bg)}
+.tab .n{font-weight:500;opacity:.7;margin-left:4px;font-size:12px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:10px 0 2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 10px;font-size:13px;cursor:pointer;color:var(--muted)}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.chip.off{text-decoration:line-through;opacity:.55}
+main{padding:8px 0 40px}
+.card{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0;box-shadow:var(--shadow)}
+.card.read{opacity:.55}
+.card .body{flex:1;min-width:0}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:4px}
+.src{font-weight:650;color:var(--text)}
+.heat{background:color-mix(in srgb,var(--hot) 16%,transparent);color:var(--hot);border-radius:6px;padding:1px 6px;font-weight:700}
+.kw{background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:1px 6px;font-weight:650}
+.title{font-size:16px;font-weight:650;line-height:1.35;margin:0 0 4px;display:block}
+.title:hover{color:var(--accent)}
+.sum{color:var(--muted);font-size:14px;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.thumb{flex:none;width:112px;height:76px;border-radius:10px;object-fit:cover;background:var(--chip)}
+.more{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+.more summary{cursor:pointer;font-size:13px;color:var(--muted);list-style:none}
+.more summary::-webkit-details-marker{display:none}
+.more a{display:block;font-size:13.5px;padding:4px 0}
+.more a b{font-weight:650;margin-right:6px}
+.trend{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}
+.trend h3{margin:0 0 2px;font-size:16px;display:flex;align-items:center;gap:8px}
+.trend .rank{color:var(--accent);font-weight:800}
+.trend a{display:block;font-size:14px;padding:5px 0;border-top:1px solid var(--line)}
+.trend a:first-of-type{border-top:0}
+.empty{text-align:center;color:var(--muted);padding:48px 16px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+.panel h2{font-size:15px;margin:0 0 4px}
+.panel p{margin:0 0 10px;color:var(--muted);font-size:13px}
+.row{display:flex;gap:8px}
+.row input{flex:1;min-width:0;height:36px;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:0 10px;outline:none}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border-radius:999px;padding:4px 6px 4px 10px;font-size:13px}
+.tag button{border:0;background:transparent;cursor:pointer;color:var(--muted);font-size:15px;line-height:1;padding:0 4px}
+.status{font-size:12px;color:var(--muted)}
+.status span{display:inline-block;margin:2px 10px 2px 0}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;background:var(--ok)}
+.dot.bad{background:var(--accent)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:13px;margin-top:6px}
+.toggle{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
+.loadmore{display:block;width:100%;margin:12px 0;height:42px}
+mark{background:color-mix(in srgb,var(--accent) 22%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+@media (max-width:520px){
+  .thumb{width:84px;height:64px}
+  .title{font-size:15px}
+  .sum{display:none}
+  .hide-sm{display:none}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="logo">LT</div>
+      <div><h1>Lọc Tin</h1><div class="upd" id="upd">Đang tải…</div></div>
+      <div class="sp"></div>
+      <button class="ibtn" id="theme" title="Đổi giao diện sáng/tối">◐</button>
+      <button class="ibtn" id="reload" title="Tải lại tin mới nhất">↻ <span class="hide-sm">Tải lại</span></button>
+    </div>
+    <div class="search"><input id="q" type="search" placeholder="Tìm trong tin (không cần gõ dấu)…" autocomplete="off"></div>
+    <nav class="tabs" id="tabs"></nav>
+  </div>
+</header>
+<div class="wrap">
+  <div class="chips" id="chips"></div>
+  <div class="bar">
+    <label class="toggle"><input type="checkbox" id="hideRead"> Ẩn tin đã đọc</label>
+    <span id="count"></span>
+  </div>
+  <main id="main"></main>
+</div>
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('loctin.' + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+    set(k, v) { try { localStorage.setItem('loctin.' + k, JSON.stringify(v)); } catch {} }
+  };
+  const S = {
+    data: null, tab: store.get('tab', 'hot'), q: '',
+    follow: store.get('follow', []), block: store.get('block', []),
+    offSources: new Set(store.get('offSources', [])),
+    read: new Set(store.get('read', [])), hideRead: store.get('hideRead', false), limit: 40
+  };
+  const plain = s => (s || '').toLowerCase().replace(/đ/g, 'd').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ');
+  const esc = s => (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const ago = iso => {
+    const m = Math.max(0, Math.round((Date.now() - new Date(iso)) / 60000));
+    if (m < 1) return 'vừa xong'; if (m < 60) return m + ' phút trước';
+    const h = Math.round(m / 60); if (h < 24) return h + ' giờ trước';
+    return Math.round(h / 24) + ' ngày trước';
+  };
+  // khớp cả khi viết liền/cách: "tp hcm" = "TPHCM"
+  const matches = (text, words) => { const t2 = text.replace(/ /g, ''); return words.filter(w => { const p = plain(w).trim(); return p && (text.includes(p) || t2.includes(p.replace(/ /g, ''))); }); };
+  const highlight = (s, words) => {
+    let out = esc(s);
+    if (!words.length) return out;
+    // tô sáng theo vị trí trên chuỗi đã bỏ dấu
+    const p = plain(s); const marks = [];
+    words.forEach(w => { const pw = plain(w).trim(); if (!pw) return; let i = p.indexOf(pw); while (i >= 0) { marks.push([i, i + pw.length]); i = p.indexOf(pw, i + pw.length); } });
+    if (!marks.length || p.length !== s.length) return out;
+    marks.sort((a, b) => a[0] - b[0]);
+    let res = '', last = 0;
+    for (const [a, b] of marks) { if (a < last) continue; res += esc(s.slice(last, a)) + '<mark>' + esc(s.slice(a, b)) + '</mark>'; last = b; }
+    return res + esc(s.slice(last));
+  };
+
+  // Theme
+  const applyTheme = t => { if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; };
+  applyTheme(store.get('theme', ''));
+  $('#theme').onclick = () => {
+    const cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = cur === 'dark' ? 'light' : 'dark'; store.set('theme', next); applyTheme(next);
+  };
+
+  async function load() {
+    $('#upd').textContent = 'Đang tải…';
+    try {
+      const r = await fetch('news.json?t=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) throw new Error(r.status);
+      S.data = await r.json();
+      S.data.items.forEach(it => { it._p = plain(it.title + ' ' + it.summary + ' ' + it.source); it._id = it.link; });
+      render();
+    } catch (e) {
+      $('#upd').textContent = 'Không tải được tin';
+      $('#main').innerHTML = '<div class="empty">Chưa có dữ liệu tin. Nếu vừa cài đặt, hãy đợi lần cập nhật đầu tiên (vài phút) rồi tải lại.</div>';
+    }
+  }
+  $('#reload').onclick = load;
+  let qt; $('#q').oninput = e => { clearTimeout(qt); qt = setTimeout(() => { S.q = e.target.value.trim(); S.limit = 40; render(); }, 150); };
+  $('#hideRead').checked = S.hideRead;
+  $('#hideRead').onchange = e => { S.hideRead = e.target.checked; store.set('hideRead', S.hideRead); render(); };
+
+  function visible() {
+    const d = S.data; const qp = plain(S.q);
+    return d.items.filter(it =>
+      it.group !== 'trends' && !S.offSources.has(it.feed) &&
+      !matches(it._p, S.block).length &&
+      (!qp || qp.split(' ').every(w => it._p.includes(w))) &&
+      (!S.hideRead || !S.read.has(it._id)));
+  }
+  // Mỗi sự kiện chỉ hiện 1 lần, các báo khác gom vào "N báo đưa tin"
+  function groupClusters(items) {
+    const map = new Map();
+    for (const it of items) {
+      const g = map.get(it.cluster);
+      if (!g) map.set(it.cluster, { lead: it, others: [] });
+      else {
+        const better = (!g.lead.image && it.image && it.group !== 'hot');
+        if (better) { g.others.push(g.lead); g.lead = it; } else g.others.push(it);
+      }
+    }
+    return [...map.values()];
+  }
+
+  function render() {
+    const d = S.data; if (!d) return;
+    $('#upd').textContent = 'Cập nhật ' + ago(d.updated) + ' · ' + new Date(d.updated).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    const items = visible();
+    const groups = groupClusters(items);
+    const hot = groups.filter(g => g.lead.heat >= 2).sort((a, b) => b.lead.heat - a.lead.heat || new Date(b.lead.time) - new Date(a.lead.time));
+    const mine = S.follow.length ? groups.filter(g => [g.lead, ...g.others].some(it => matches(it._p, S.follow).length)) : [];
+    const tabs = [
+      ['hot', 'Nóng', hot.length], ['new', 'Mới nhất', groups.length], ['mine', 'Theo dõi', mine.length],
+      ['trends', 'Xu hướng', (d.trends || []).length], ['settings', 'Cài đặt', null]
+    ];
+    $('#tabs').innerHTML = tabs.map(([k, l, n]) => `<button class="tab ${S.tab === k ? 'on' : ''}" data-tab="${k}">${l}${n != null ? `<span class="n">${n}</span>` : ''}</button>`).join('');
+    $('#tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => { S.tab = b.dataset.tab; S.limit = 40; store.set('tab', S.tab); render(); scrollTo(0, 0); });
+
+    const feeds = [...new Set(d.items.filter(i => i.group !== 'trends').map(i => i.feed))];
+    const showChips = S.tab === 'new' || S.tab === 'hot' || S.tab === 'mine';
+    $('#chips').style.display = showChips ? '' : 'none';
+    $('#chips').innerHTML = feeds.map(f => `<button class="chip ${S.offSources.has(f) ? 'off' : 'on'}" data-f="${esc(f)}">${esc(f)}</button>`).join('');
+    $('#chips').querySelectorAll('.chip').forEach(b => b.onclick = () => {
+      const f = b.dataset.f; S.offSources.has(f) ? S.offSources.delete(f) : S.offSources.add(f);
+      store.set('offSources', [...S.offSources]); render();
+    });
+    document.querySelector('.bar').style.display = showChips ? '' : 'none';
+
+    const main = $('#main');
+    if (S.tab === 'trends') return renderTrends(main, d.trends || []);
+    if (S.tab === 'settings') return renderSettings(main, d);
+    let list = S.tab === 'hot' ? hot : S.tab === 'mine' ? mine : groups;
+    if (S.tab === 'mine' && !S.follow.length) {
+      main.innerHTML = '<div class="empty">Bạn chưa theo dõi từ khóa nào.<br><br><button class="ibtn" id="goset">Thêm từ khóa theo dõi</button></div>';
+      $('#goset').onclick = () => { S.tab = 'settings'; render(); }; $('#count').textContent = ''; return;
+    }
+    $('#count').textContent = list.length + ' tin';
+    if (!list.length) { main.innerHTML = '<div class="empty">Không có tin phù hợp.</div>'; return; }
+    const hlWords = [...S.follow, ...(S.q ? S.q.split(/\s+/) : [])];
+    main.innerHTML = list.slice(0, S.limit).map(g => card(g, hlWords)).join('') +
+      (list.length > S.limit ? `<button class="ibtn loadmore" id="more">Xem thêm ${list.length - S.limit} tin</button>` : '');
+    const m = $('#more'); if (m) m.onclick = () => { S.limit += 40; render(); };
+    main.querySelectorAll('a[data-id]').forEach(a => a.addEventListener('click', () => {
+      S.read.add(a.dataset.id); const arr = [...S.read].slice(-1500); store.set('read', arr);
+      a.closest('.card')?.classList.add('read');
+    }));
+  }
+
+  function card(g, hl) {
+    const it = g.lead; const isRead = S.read.has(it._id);
+    const kws = matches(it._p, S.follow);
+    const sources = new Set([it.source, ...g.others.map(o => o.source)].map(s => plain(s).replace(/^bao /, '')));
+    const others = g.others.filter(o => o.link !== it.link);
+    return `<article class="card ${isRead ? 'read' : ''}">
+      <div class="body">
+        <div class="meta"><span class="src">${esc(it.source)}</span><span>· ${ago(it.time)}</span>
+          ${it.heat >= 2 ? `<span class="heat">🔥 ${Math.max(it.heat, sources.size)} nguồn</span>` : ''}
+          ${kws.map(k => `<span class="kw">#${esc(k)}</span>`).join('')}</div>
+        <a class="title" href="${esc(it.link)}" target="_blank" rel="noopener" data-id="${esc(it._id)}">${highlight(it.title, hl)}</a>
+        ${it.summary ? `<p class="sum">${esc(it.summary)}</p>` : ''}
+        ${others.length ? `<details class="more"><summary>+ ${others.length} bài cùng sự kiện ▾</summary>
+          ${others.map(o => `<a href="${esc(o.link)}" target="_blank" rel="noopener" data-id="${esc(o._id)}"><b>${esc(o.source)}</b>${esc(o.title)}</a>`).join('')}</details>` : ''}
+      </div>
+      ${it.image ? `<img class="thumb" loading="lazy" referrerpolicy="no-referrer" src="${esc(it.image)}" alt="" onerror="this.remove()">` : ''}
+    </article>`;
+  }
+
+  function renderTrends(main, trends) {
+    $('#count').textContent = '';
+    if (!trends.length) { main.innerHTML = '<div class="empty">Chưa có dữ liệu xu hướng.</div>'; return; }
+    main.innerHTML = '<p class="status" style="margin:12px 0 0">Những gì người Việt đang tìm kiếm nhiều nhất trên Google lúc này.</p>' +
+      trends.map((t, i) => `<section class="trend"><h3><span class="rank">#${i + 1}</span>${esc(t.term)}
+        ${t.traffic ? `<span class="heat">${esc(t.traffic)} lượt tìm</span>` : ''}</h3>
+        <div class="status" style="margin-bottom:6px">${ago(t.time)}</div>
+        ${(t.news || []).map(n => `<a href="${esc(n.link)}" target="_blank" rel="noopener"><b>${esc(n.source)}</b> · ${esc(n.title)}</a>`).join('')}
+      </section>`).join('');
+  }
+
+  function tagEditor(key, title, desc, placeholder) {
+    return `<section class="panel"><h2>${title}</h2><p>${desc}</p>
+      <form class="row" data-k="${key}"><input placeholder="${placeholder}" maxlength="60"><button class="ibtn" type="submit">Thêm</button></form>
+      <div class="tags">${S[key].map((w, i) => `<span class="tag">${esc(w)}<button data-k="${key}" data-i="${i}" title="Xóa">×</button></span>`).join('') || '<span class="status">Chưa có</span>'}</div></section>`;
+  }
+  function renderSettings(main, d) {
+    $('#count').textContent = '';
+    main.innerHTML =
+      tagEditor('follow', '⭐ Từ khóa theo dõi', 'Tin chứa các từ này được đánh dấu và gom vào tab "Theo dõi". Không cần gõ dấu.', 'VD: giá vàng, iPhone, Hà Nội') +
+      tagEditor('block', '🚫 Từ khóa chặn', 'Tin chứa các từ này sẽ bị ẩn hoàn toàn.', 'VD: showbiz, xổ số') +
+      `<section class="panel"><h2>Tình trạng nguồn tin</h2><p>Lần lấy tin gần nhất: ${new Date(d.updated).toLocaleString('vi-VN')}</p>
+        <div class="status">${(d.sources || []).map(s => `<span><i class="dot ${s.ok ? '' : 'bad'}"></i>${esc(s.name)} (${s.count})</span>`).join('')}</div></section>
+      <section class="panel"><h2>Dữ liệu đã đọc</h2><p>Đã đánh dấu ${S.read.size} tin là đã đọc (lưu trên thiết bị này).</p>
+        <button class="ibtn" id="clrRead">Xóa lịch sử đã đọc</button></section>`;
+    main.querySelectorAll('form[data-k]').forEach(f => f.onsubmit = e => {
+      e.preventDefault(); const k = f.dataset.k; const v = f.querySelector('input').value.trim();
+      if (v && !S[k].some(x => plain(x) === plain(v))) { S[k].push(v); store.set(k, S[k]); }
+      render(); main.querySelector(`form[data-k="${k}"] input`)?.focus();
+    });
+    main.querySelectorAll('.tag button').forEach(b => b.onclick = () => { const k = b.dataset.k; S[k].splice(+b.dataset.i, 1); store.set(k, S[k]); render(); });
+    $('#clrRead').onclick = () => { S.read.clear(); store.set('read', []); render(); };
+  }
+
+  load();
+  // tự tải lại khi quay lại tab sau hơn 10 phút
+  let last = Date.now();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - last > 600000) { last = Date.now(); load(); } });
+})();
+</script>
+</body>
+</html>
