@@ -197,6 +197,11 @@ mark{background:color-mix(in srgb,var(--pin) 35%,transparent);color:inherit;bord
   let qt; $('#q').oninput = e => { clearTimeout(qt); qt = setTimeout(() => { S.q = e.target.value.trim(); S.limit = 40; render(); }, 150); };
   $('#setBtn').onclick = () => { S.settings = !S.settings; render(); scrollTo(0, 0); };
   $('#reload').onclick = load;
+  // Tự tải lại tin: 10 phút một lần khi đang mở trang, và mỗi khi quay lại trang
+  setInterval(() => { if (!document.hidden) load(); }, 10 * 60000);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && S.data && Date.now() - new Date(S.data.updated) > 15 * 60000) load();
+  });
 
   async function load() {
     $('#upd').textContent = 'Đang tải…';
@@ -252,7 +257,7 @@ mark{background:color-mix(in srgb,var(--pin) 35%,transparent);color:inherit;bord
 
   function render() {
     const d = S.data; if (!d) return;
-    $('#upd').textContent = 'Cập nhật ' + ago(d.updated) + ' · ' + new Date(d.updated).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    $('#upd').textContent = 'Cập nhật ' + ago(d.updated) + ' · ' + new Date(d.updated).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + (Date.now() - new Date(d.updated) > 2 * 3600000 ? ' ⚠' : '');
     $('#setBtn').classList.toggle('on', S.settings);
     const groups = groupClusters(baseItems());
     const hot = groups.filter(g => g.lead.heat >= 2);
