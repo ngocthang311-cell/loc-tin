@@ -196,11 +196,47 @@ mark{background:color-mix(in srgb,var(--pin) 35%,transparent);color:inherit;bord
   bind('#time', 'time'); bind('#src', 'src'); bind('#sort', 'sort'); bind('#unread', 'unread', 'change', 'checked');
   let qt; $('#q').oninput = e => { clearTimeout(qt); qt = setTimeout(() => { S.q = e.target.value.trim(); S.limit = 40; render(); }, 150); };
   $('#setBtn').onclick = () => { S.settings = !S.settings; render(); scrollTo(0, 0); };
-  $('#reload').onclick = load;
+  $('#reload').onclick = fetchNow;
   // Tự tải lại tin: 10 phút một lần khi đang mở trang, và mỗi khi quay lại trang
-  setInterval(() => { if (!document.hidden) load(); }, 10 * 60000);
+  setInterval(() => { if (!document.hidden && !busy) load(); }, 10 * 60000);
+
+  // Nút Tải lại: nhờ GitHub lấy tin mới từ các báo ngay (cần mã GitHub đã lưu trong Cài đặt)
+  const REPO = location.hostname.endsWith('.github.io')
+    ? location.hostname.split('.')[0] + '/' + location.pathname.split('/')[1]
+    : 'ngocthang311-cell/loc-tin';
+  let busy = false;
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  async function fetchNow() {
+    const token = store.get('ghtoken', '');
+    if (!token) { await load(); $('#upd').textContent += ' · Muốn lấy tin mới ngay: xem ⚙ Cài đặt'; return; }
+    if (busy) return;
+    busy = true; $('#reload').disabled = true;
+    const before = S.data ? S.data.updated : '';
+    try {
+      $('#upd').textContent = 'Đang nhờ GitHub lấy tin mới…';
+      const r = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/cap-nhat-tin.yml/dispatches`, {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' },
+        body: JSON.stringify({ ref: 'main' })
+      });
+      if (r.status === 401 || r.status === 403 || r.status === 404) throw new Error('Mã GitHub không hợp lệ hoặc hết hạn — xem ⚙ Cài đặt');
+      if (!r.ok) throw new Error('GitHub báo lỗi ' + r.status);
+      const t0 = Date.now();
+      while (Date.now() - t0 < 4 * 60000) {
+        $('#upd').textContent = `Đang lấy tin mới từ các báo… ${Math.round((Date.now() - t0) / 1000)} giây (thường mất khoảng 1–2 phút)`;
+        await sleep(8000);
+        try {
+          const d = await (await fetch('news.json?t=' + Date.now(), { cache: 'no-store' })).json();
+          if (d.updated !== before) { await load(); return; }
+        } catch {}
+      }
+      await load(); $('#upd').textContent += ' · GitHub chạy chậm, lát nữa tin sẽ tự cập nhật';
+    } catch (e) {
+      await load(); $('#upd').textContent = e.message;
+    } finally { busy = false; $('#reload').disabled = false; }
+  }
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && S.data && Date.now() - new Date(S.data.updated) > 15 * 60000) load();
+    if (!document.hidden && !busy && S.data && Date.now() - new Date(S.data.updated) > 15 * 60000) load();
   });
 
   async function load() {
@@ -352,6 +388,10 @@ mark{background:color-mix(in srgb,var(--pin) 35%,transparent);color:inherit;bord
       tagEditor('block', '🚫 Từ khóa chặn', 'Tin chứa các từ này sẽ bị ẩn hoàn toàn.', 'VD: showbiz, xổ số') +
       `<section class="panel"><h2>Tình trạng nguồn tin</h2><p>Lần lấy tin gần nhất: ${new Date(d.updated).toLocaleString('vi-VN')}</p>
         <div class="status">${(d.sources || []).map(s => `<span title="${esc(s.error || '')}"><i class="dot ${s.ok ? '' : 'bad'}"></i>${esc(s.name)} (${s.count})</span>`).join('')}</div></section>
+      <section class="panel"><h2>↻ Lấy tin mới ngay khi bấm Tải lại</h2>
+        <p>${store.get('ghtoken', '') ? '✅ Đã lưu mã GitHub trên thiết bị này. Bấm ↻ Tải lại là GitHub lấy tin mới ngay (mất khoảng 1–2 phút).' : 'Chưa có mã. Hiện nút ↻ chỉ tải lại bản tin gần nhất (GitHub tự lấy tin mỗi giờ).'}
+        Mã chỉ lưu trên thiết bị này, không đưa lên trang web. Cách tạo mã: xem file HUONG-DAN.md.</p>
+        <form class="row" id="tokForm"><input type="password" placeholder="Dán mã github_pat_… vào đây" autocomplete="off"><button class="ibtn" type="submit">Lưu</button>${store.get('ghtoken', '') ? '<button class="ibtn" type="button" id="tokDel">Xóa mã</button>' : ''}</form></section>
       <section class="panel"><h2>Dữ liệu trên thiết bị này</h2><p>Đã đọc ${S.read.size} tin · Đã ghim ${S.pins.length} tin.</p>
         <button class="ibtn" id="clrRead">Xóa lịch sử đã đọc</button></section>`;
     main.querySelectorAll('form[data-k]').forEach(f => f.onsubmit = e => {
@@ -361,12 +401,11 @@ mark{background:color-mix(in srgb,var(--pin) 35%,transparent);color:inherit;bord
     });
     main.querySelectorAll('.tag button').forEach(b => b.onclick = () => { const k = b.dataset.k; S[k].splice(+b.dataset.i, 1); store.set(k, S[k]); render(); });
     $('#clrRead').onclick = () => { S.read.clear(); store.set('read', []); render(); };
+    $('#tokForm').onsubmit = e => { e.preventDefault(); const v = e.target.querySelector('input').value.trim(); if (v) { store.set('ghtoken', v); render(); } };
+    if ($('#tokDel')) $('#tokDel').onclick = () => { try { localStorage.removeItem('loctin.ghtoken'); } catch {} render(); };
   }
 
   load();
-  // tự tải lại khi quay lại trang sau hơn 10 phút
-  let last = Date.now();
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - last > 600000) { last = Date.now(); load(); } });
 })();
 </script>
 </body>
