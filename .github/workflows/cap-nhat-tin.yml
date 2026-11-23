@@ -2,7 +2,7 @@ name: Cap nhat tin
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # 30 phút một lần (giờ GitHub có thể trễ vài phút)
+    - cron: "7 * * * *"      # mỗi giờ một lần, vào phút thứ 7 (GitHub có thể trễ vài phút)
   workflow_dispatch:          # cho phép bấm chạy tay
   push:
     branches: [main]
