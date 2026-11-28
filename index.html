@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f6f9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="referrer" content="no-referrer">
+<title>Lọc Tin</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231e3a5f'/%3E%3Ctext x='32' y='44' font-size='34' font-family='Arial' font-weight='700' fill='white' text-anchor='middle'%3ELT%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f4f6f9;--card:#fff;--text:#16202c;--muted:#6b7685;--line:#e3e7ee;
+  --navy:#1e3a5f;--navy-text:#fff;--chip:#e9edf2;--hot:#e4572e;--hot-bg:#fde7e2;
+  --accent:#1e3a5f;--pin:#f5b301;--ok:#16a34a;--bad:#dc2626;--shadow:0 1px 2px rgba(16,24,40,.05);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1319;--card:#171e27;--text:#e5ebf2;--muted:#8d99a8;--line:#263140;
+  --navy:#3d6a9e;--navy-text:#fff;--chip:#212b37;--hot:#ff7a52;--hot-bg:#3a2119;
+  --accent:#7fb0e6;--pin:#f5c542;--ok:#4ade80;--bad:#f87171;--shadow:none;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e1319;--card:#171e27;--text:#e5ebf2;--muted:#8d99a8;--line:#263140;
+  --navy:#3d6a9e;--navy-text:#fff;--chip:#212b37;--hot:#ff7a52;--hot-bg:#3a2119;
+  --accent:#7fb0e6;--pin:#f5c542;--ok:#4ade80;--bad:#f87171;--shadow:none;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.top{display:flex;align-items:center;gap:10px;padding:10px 0 6px}
+.logo{width:30px;height:30px;border-radius:8px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+h1{font-size:18px;margin:0;font-weight:750}
+.upd{font-size:12px;color:var(--muted)}
+.sp{flex:1}
+.ibtn{border:1px solid var(--line);background:var(--card);border-radius:10px;height:36px;min-width:36px;padding:0 10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:14px}
+.ibtn:hover{border-color:var(--muted)}
+.ibtn.on{background:var(--navy);color:var(--navy-text);border-color:var(--navy)}
+.filters{display:grid;grid-template-columns:minmax(160px,1.3fr) auto minmax(140px,1.6fr) auto auto;gap:10px;align-items:center;padding:6px 0 8px}
+.filters input[type=search],.filters select{height:44px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:0 12px;outline:none;min-width:0;width:100%}
+.filters select{padding-right:8px;cursor:pointer}
+.filters input:focus,.filters select:focus{border-color:var(--accent)}
+.unread{display:inline-flex;align-items:center;gap:6px;color:var(--muted);cursor:pointer;user-select:none;white-space:nowrap}
+.unread input{width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 12px}
+.chip{border:0;background:var(--chip);border-radius:999px;padding:7px 14px;font-size:14.5px;cursor:pointer;color:var(--text);white-space:nowrap}
+.chip .n{color:var(--muted);margin-left:3px}
+.chip.hot{background:var(--hot-bg);color:var(--hot)}
+.chip.hot .n{color:var(--hot);opacity:.8}
+.chip.on{background:var(--navy);color:var(--navy-text);font-weight:600}
+.chip.on .n{color:var(--navy-text);opacity:.85}
+main{padding:10px 0 48px}
+.card{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:0 0 10px;box-shadow:var(--shadow)}
+.card.read .title,.card.read .sum{opacity:.55}
+.card .body{flex:1;min-width:0}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);margin-bottom:4px}
+.src{font-weight:650;color:var(--text)}
+.heat{background:var(--hot-bg);color:var(--hot);border-radius:6px;padding:1px 6px;font-weight:700}
+.cat{background:var(--chip);border-radius:6px;padding:1px 6px}
+.kw{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent);border-radius:6px;padding:1px 6px;font-weight:650}
+.title{font-size:16px;font-weight:650;line-height:1.35;margin:0 0 4px;display:block}
+.title:hover{color:var(--accent)}
+.sum{color:var(--muted);font-size:14px;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.side{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none}
+.thumb{width:120px;height:80px;border-radius:10px;object-fit:cover;background:var(--chip)}
+.pinb{border:0;background:transparent;cursor:pointer;font-size:19px;line-height:1;color:var(--muted);padding:2px 4px;opacity:.6}
+.pinb:hover{opacity:1}
+.pinb.on{color:var(--pin);opacity:1}
+.more{margin-top:8px;border-top:1px dashed var(--line);padding-top:6px}
+.more summary{cursor:pointer;font-size:13px;color:var(--muted);list-style:none}
+.more summary::-webkit-details-marker{display:none}
+.more a{display:block;font-size:13.5px;padding:4px 0}
+.more a b{font-weight:650;margin-right:6px}
+.trend{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:0 0 10px}
+.trend h3{margin:0 0 2px;font-size:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.trend .rank{color:var(--hot);font-weight:800}
+.trend a{display:block;font-size:14px;padding:5px 0;border-top:1px solid var(--line)}
+.trend a:first-of-type{border-top:0}
+.empty{text-align:center;color:var(--muted);padding:48px 16px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 0 10px}
+.panel h2{font-size:15px;margin:0 0 4px}
+.panel p{margin:0 0 10px;color:var(--muted);font-size:13px}
+.row{display:flex;gap:8px}
+.row input{flex:1;min-width:0;height:38px;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:0 10px;outline:none}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border-radius:999px;padding:4px 6px 4px 10px;font-size:13px}
+.tag button{border:0;background:transparent;cursor:pointer;color:var(--muted);font-size:15px;line-height:1;padding:0 4px}
+.status{font-size:12.5px;color:var(--muted)}
+.status span{display:inline-block;margin:2px 12px 2px 0}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px;background:var(--ok)}
+.dot.bad{background:var(--bad)}
+.count{font-size:13px;color:var(--muted);margin:0 0 8px}
+.loadmore{display:block;width:100%;margin:12px 0;height:44px}
+mark{background:color-mix(in srgb,var(--pin) 35%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+@media (max-width:760px){
+  header{position:static}
+  .filters{grid-template-columns:1fr 1fr;gap:8px}
+  .filters .q{grid-column:1 / -1}
+  .filters input[type=search],.filters select{height:40px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 10px}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{padding:6px 12px;font-size:14px}
+}
+@media (max-width:520px){
+  .thumb{width:86px;height:64px}
+  .title{font-size:15px}
+  .sum{display:none}
+  .hide-sm{display:none}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="logo">LT</div>
+      <div><h1>Lọc Tin</h1><div class="upd" id="upd">Đang tải…</div></div>
+      <div class="sp"></div>
+      <button class="ibtn" id="theme" title="Đổi giao diện sáng/tối" aria-label="Đổi giao diện">◐</button>
+      <button class="ibtn" id="setBtn" title="Cài đặt từ khóa" aria-label="Cài đặt">⚙<span class="hide-sm"> Cài đặt</span></button>
+      <button class="ibtn" id="reload" title="Tải lại tin mới nhất" aria-label="Tải lại">↻<span class="hide-sm"> Tải lại</span></button>
+    </div>
+    <div class="filters">
+      <input class="q" id="q" type="search" placeholder="Tìm trong tiêu đề, tóm tắt…" autocomplete="off">
+      <select id="time" aria-label="Thời gian">
+        <option value="today">Hôm nay</option>
+        <option value="24">24 giờ qua</option>
+        <option value="48">2 ngày qua</option>
+      </select>
+      <select id="src" aria-label="Nguồn báo"><option value="">Tất cả báo</option></select>
+      <select id="sort" aria-label="Sắp xếp">
+        <option value="new">Mới nhất trước</option>
+        <option value="heat">Nhiều báo đưa nhất</option>
+        <option value="old">Cũ nhất trước</option>
+      </select>
+      <label class="unread"><input type="checkbox" id="unread"> Chỉ tin chưa đọc</label>
+    </div>
+    <nav class="chips" id="chips"></nav>
+  </div>
+</header>
+<div class="wrap"><main id="main"></main></div>
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('loctin.' + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+    set(k, v) { try { localStorage.setItem('loctin.' + k, JSON.stringify(v)); } catch {} }
+  };
+  const S = {
+    data: null, q: '', limit: 40, settings: false,
+    view: store.get('view', 'all'),               // all | hot | pinned | trends | follow | <category id>
+    time: store.get('time', 'today'), src: store.get('src', ''), sort: store.get('sort', 'new'),
+    unread: store.get('unread', false),
+    follow: store.get('follow', []), block: store.get('block', []),
+    read: new Set(store.get('read', [])),
+    pins: store.get('pins', [])                    // lưu cả bài để không mất khi tin cũ bị xóa khỏi dữ liệu
+  };
+  const plain = s => (s || '').toLowerCase().replace(/đ/g, 'd').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ');
+  const esc = s => (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const ago = iso => {
+    const m = Math.max(0, Math.round((Date.now() - new Date(iso)) / 60000));
+    if (m < 1) return 'vừa xong'; if (m < 60) return m + ' phút trước';
+    const h = Math.round(m / 60); if (h < 24) return h + ' giờ trước';
+    return Math.round(h / 24) + ' ngày trước';
+  };
+  // khớp cả khi viết liền/cách: "tp hcm" = "TPHCM"
+  const matches = (text, words) => { const t2 = text.replace(/ /g, ''); return words.filter(w => { const p = plain(w).trim(); return p && (text.includes(p) || t2.includes(p.replace(/ /g, ''))); }); };
+  const highlight = (s, words) => {
+    const out = esc(s); if (!words.length) return out;
+    const p = plain(s); if (p.length !== s.length) return out;
+    const marks = [];
+    words.forEach(w => { const pw = plain(w).trim(); if (!pw) return; let i = p.indexOf(pw); while (i >= 0) { marks.push([i, i + pw.length]); i = p.indexOf(pw, i + pw.length); } });
+    if (!marks.length) return out;
+    marks.sort((a, b) => a[0] - b[0]);
+    let res = '', last = 0;
+    for (const [a, b] of marks) { if (a < last) continue; res += esc(s.slice(last, a)) + '<mark>' + esc(s.slice(a, b)) + '</mark>'; last = b; }
+    return res + esc(s.slice(last));
+  };
+  const isPinned = link => S.pins.some(p => p.link === link);
+
+  // Giao diện sáng/tối
+  const applyTheme = t => { if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme; };
+  applyTheme(store.get('theme', ''));
+  $('#theme').onclick = () => {
+    const cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = cur === 'dark' ? 'light' : 'dark'; store.set('theme', next); applyTheme(next);
+  };
+
+  // Bộ lọc
+  $('#time').value = S.time; $('#sort').value = S.sort; $('#unread').checked = S.unread;
+  const bind = (id, key, ev = 'change', prop = 'value') => $(id).addEventListener(ev, e => { S[key] = e.target[prop]; store.set(key, S[key]); S.limit = 40; render(); });
+  bind('#time', 'time'); bind('#src', 'src'); bind('#sort', 'sort'); bind('#unread', 'unread', 'change', 'checked');
+  let qt; $('#q').oninput = e => { clearTimeout(qt); qt = setTimeout(() => { S.q = e.target.value.trim(); S.limit = 40; render(); }, 150); };
+  $('#setBtn').onclick = () => { S.settings = !S.settings; render(); scrollTo(0, 0); };
+  $('#reload').onclick = fetchNow;
+  // Tự tải lại tin: 10 phút một lần khi đang mở trang, và mỗi khi quay lại trang
+  setInterval(() => { if (!document.hidden && !busy) load(); }, 10 * 60000);
+
+  // Nút Tải lại: nhờ GitHub lấy tin mới từ các báo ngay (cần mã GitHub đã lưu trong Cài đặt)
+  const REPO = location.hostname.endsWith('.github.io')
+    ? location.hostname.split('.')[0] + '/' + location.pathname.split('/')[1]
+    : 'ngocthang311-cell/loc-tin';
+  let busy = false;
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  async function fetchNow() {
+    const token = store.get('ghtoken', '');
+    if (!token) { await load(); $('#upd').textContent += ' · Muốn lấy tin mới ngay: xem ⚙ Cài đặt'; return; }
+    if (busy) return;
+    busy = true; $('#reload').disabled = true;
+    const before = S.data ? S.data.updated : '';
+    try {
+      $('#upd').textContent = 'Đang nhờ GitHub lấy tin mới…';
+      const r = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/cap-nhat-tin.yml/dispatches`, {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' },
+        body: JSON.stringify({ ref: 'main' })
+      });
+      if (r.status === 401 || r.status === 403 || r.status === 404) throw new Error('Mã GitHub không hợp lệ hoặc hết hạn — xem ⚙ Cài đặt');
+      if (!r.ok) throw new Error('GitHub báo lỗi ' + r.status);
+      const t0 = Date.now();
+      while (Date.now() - t0 < 4 * 60000) {
+        $('#upd').textContent = `Đang lấy tin mới từ các báo… ${Math.round((Date.now() - t0) / 1000)} giây (thường mất khoảng 1–2 phút)`;
+        await sleep(8000);
+        try {
+          const d = await (await fetch('news.json?t=' + Date.now(), { cache: 'no-store' })).json();
+          if (d.updated !== before) { await load(); return; }
+        } catch {}
+      }
+      await load(); $('#upd').textContent += ' · GitHub chạy chậm, lát nữa tin sẽ tự cập nhật';
+    } catch (e) {
+      await load(); $('#upd').textContent = e.message;
+    } finally { busy = false; $('#reload').disabled = false; }
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !busy && S.data && Date.now() - new Date(S.data.updated) > 15 * 60000) load();
+  });
+
+  async function load() {
+    $('#upd').textContent = 'Đang tải…';
+    try {
+      const r = await fetch('news.json?t=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) throw new Error(r.status);
+      S.data = await r.json();
+      S.data.items.forEach(it => { it._p = plain(it.title + ' ' + it.summary + ' ' + it.source); it._t = +new Date(it.time); it.cats = it.cats || []; });
+      S.catName = Object.fromEntries((S.data.categories || []).map(c => [c.id, c.name]));
+      const feeds = [...new Set(S.data.items.map(i => i.feed))];
+      $('#src').innerHTML = '<option value="">Tất cả báo</option>' + feeds.map(f => `<option>${esc(f)}</option>`).join('');
+      if (S.src && !feeds.includes(S.src)) S.src = '';
+      $('#src').value = S.src;
+      render();
+    } catch (e) {
+      $('#upd').textContent = 'Không tải được tin';
+      $('#main').innerHTML = '<div class="empty">Chưa có dữ liệu tin. Nếu vừa cài đặt, hãy đợi lần cập nhật đầu tiên (vài phút) rồi tải lại.</div>';
+    }
+  }
+
+  function since() {
+    if (S.time === 'today') { const d = new Date(); d.setHours(0, 0, 0, 0); return +d; }
+    return Date.now() - (+S.time) * 3600000;
+  }
+  // Áp các bộ lọc chung (thời gian, báo, tìm kiếm, chưa đọc, từ khóa chặn)
+  function baseItems() {
+    const from = since(); const qp = plain(S.q).trim();
+    return S.data.items.filter(it =>
+      it._t >= from && (!S.src || it.feed === S.src) &&
+      !matches(it._p, S.block).length &&
+      (!qp || qp.split(' ').every(w => it._p.includes(w))) &&
+      (!S.unread || !S.read.has(it.link)));
+  }
+  // Mỗi sự kiện hiện 1 lần, các báo khác gom vào "N bài cùng sự kiện"
+  function groupClusters(items) {
+    const map = new Map();
+    for (const it of items) {
+      const g = map.get(it.cluster);
+      if (!g) map.set(it.cluster, { lead: it, others: [], cats: new Set(it.cats) });
+      else {
+        it.cats.forEach(c => g.cats.add(c));
+        if (!g.lead.image && it.image && it.group === 'vn') { g.others.push(g.lead); g.lead = it; } else g.others.push(it);
+      }
+    }
+    return [...map.values()];
+  }
+  function sortGroups(list) {
+    const t = g => Math.max(g.lead._t, ...g.others.map(o => o._t));
+    if (S.sort === 'heat') return list.sort((a, b) => b.lead.heat - a.lead.heat || t(b) - t(a));
+    if (S.sort === 'old') return list.sort((a, b) => t(a) - t(b));
+    return list.sort((a, b) => t(b) - t(a));
+  }
+
+  function render() {
+    const d = S.data; if (!d) return;
+    $('#upd').textContent = 'Cập nhật ' + ago(d.updated) + ' · ' + new Date(d.updated).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + (Date.now() - new Date(d.updated) > 2 * 3600000 ? ' ⚠' : '');
+    $('#setBtn').classList.toggle('on', S.settings);
+    const groups = groupClusters(baseItems());
+    const hot = groups.filter(g => g.lead.heat >= 2);
+    const follow = S.follow.length ? groups.filter(g => [g.lead, ...g.others].some(it => matches(it._p, S.follow).length)) : [];
+    const byCat = id => groups.filter(g => g.cats.has(id));
+
+    const chips = [['all', 'Tất cả', groups.length], ['hot', '🔥 Nhiều báo đưa', hot.length, 'hot']];
+    (d.categories || []).forEach(c => chips.push([c.id, c.name, byCat(c.id).length]));
+    if (S.follow.length) chips.push(['follow', '👁 Theo dõi', follow.length]);
+    chips.push(['trends', '📈 Xu hướng tìm kiếm', (d.trends || []).length]);
+    chips.push(['pinned', '⭐ Đã ghim', S.pins.length]);
+    if (!chips.some(c => c[0] === S.view)) S.view = 'all';
+    $('#chips').innerHTML = chips.map(([k, l, n, cls]) =>
+      `<button class="chip ${cls || ''} ${!S.settings && S.view === k ? 'on' : ''}" data-v="${k}">${esc(l)} <span class="n">${n}</span></button>`).join('');
+    $('#chips').querySelectorAll('.chip').forEach(b => b.onclick = () => {
+      S.view = b.dataset.v; S.settings = false; S.limit = 40; store.set('view', S.view); render(); scrollTo(0, 0);
+    });
+    const on = $('#chips .chip.on'); if (on && on.scrollIntoView && innerWidth <= 760) on.scrollIntoView({ inline: 'center', block: 'nearest' });
+
+    const main = $('#main');
+    if (S.settings) return renderSettings(main, d);
+    if (S.view === 'trends') return renderTrends(main, d.trends || []);
+    if (S.view === 'pinned') return renderList(main, S.pins.map(p => ({ lead: p, others: [], cats: new Set(p.cats || []) })), 'Chưa ghim tin nào. Bấm ☆ ở mỗi tin để lưu lại đọc sau.');
+    let list = S.view === 'all' ? groups : S.view === 'hot' ? hot : S.view === 'follow' ? follow : byCat(S.view);
+    renderList(main, sortGroups(list), S.time === 'today' ? 'Hôm nay chưa có tin phù hợp. Thử chọn "2 ngày qua".' : 'Không có tin phù hợp.');
+  }
+
+  function renderList(main, list, emptyMsg) {
+    if (!list.length) { main.innerHTML = `<div class="empty">${emptyMsg}</div>`; return; }
+    const hl = [...S.follow, ...(S.q ? S.q.split(/\s+/) : [])];
+    main.innerHTML = `<p class="count">${list.length} tin</p>` + list.slice(0, S.limit).map(g => card(g, hl)).join('') +
+      (list.length > S.limit ? `<button class="ibtn loadmore" id="more">Xem thêm ${list.length - S.limit} tin</button>` : '');
+    const m = $('#more'); if (m) m.onclick = () => { S.limit += 40; render(); };
+    main.querySelectorAll('a[data-link]').forEach(a => a.addEventListener('click', () => {
+      S.read.add(a.dataset.link); store.set('read', [...S.read].slice(-3000));
+      a.closest('.card')?.classList.add('read');
+    }));
+    main.querySelectorAll('.pinb').forEach(b => b.onclick = () => {
+      const link = b.dataset.link;
+      if (isPinned(link)) S.pins = S.pins.filter(p => p.link !== link);
+      else {
+        const it = S.data.items.find(i => i.link === link) || S.pins.find(p => p.link === link);
+        if (it) S.pins.unshift({ title: it.title, link: it.link, source: it.source, feed: it.feed, time: it.time, summary: it.summary, image: it.image, cats: it.cats, heat: 1, _t: +new Date(it.time), _p: plain(it.title) });
+      }
+      store.set('pins', S.pins.map(({ _p, _t, ...rest }) => rest));
+      render();
+    });
+  }
+
+  function card(g, hl) {
+    const it = g.lead; const isRead = S.read.has(it.link);
+    const kws = matches(it._p || plain(it.title), S.follow);
+    const others = g.others.filter(o => o.link !== it.link);
+    const cats = [...g.cats].filter(c => c !== S.view).slice(0, 2).map(c => S.catName && S.catName[c]).filter(Boolean);
+    const pinned = isPinned(it.link);
+    return `<article class="card ${isRead ? 'read' : ''}">
+      <div class="body">
+        <div class="meta"><span class="src">${esc(it.source)}</span><span>· ${ago(it.time)}</span>
+          ${it.heat >= 2 ? `<span class="heat">🔥 ${it.heat} báo</span>` : ''}
+          ${cats.map(c => `<span class="cat">${esc(c)}</span>`).join('')}
+          ${kws.map(k => `<span class="kw">#${esc(k)}</span>`).join('')}</div>
+        <a class="title" href="${esc(it.link)}" target="_blank" rel="noopener" data-link="${esc(it.link)}">${highlight(it.title, hl)}</a>
+        ${it.summary ? `<p class="sum">${esc(it.summary)}</p>` : ''}
+        ${others.length ? `<details class="more"><summary>+ ${others.length} bài cùng sự kiện ▾</summary>
+          ${others.map(o => `<a href="${esc(o.link)}" target="_blank" rel="noopener" data-link="${esc(o.link)}"><b>${esc(o.source)}</b>${esc(o.title)}</a>`).join('')}</details>` : ''}
+      </div>
+      <div class="side">
+        <button class="pinb ${pinned ? 'on' : ''}" data-link="${esc(it.link)}" title="${pinned ? 'Bỏ ghim' : 'Ghim để đọc sau'}" aria-label="${pinned ? 'Bỏ ghim' : 'Ghim'}">${pinned ? '★' : '☆'}</button>
+        ${it.image ? `<img class="thumb" loading="lazy" referrerpolicy="no-referrer" src="${esc(it.image)}" alt="" onerror="this.remove()">` : ''}
+      </div>
+    </article>`;
+  }
+
+  function renderTrends(main, trends) {
+    if (!trends.length) { main.innerHTML = '<div class="empty">Chưa có dữ liệu xu hướng.</div>'; return; }
+    main.innerHTML = '<p class="count">Những gì người Việt đang tìm kiếm nhiều nhất trên Google lúc này.</p>' +
+      trends.map((t, i) => `<section class="trend"><h3><span class="rank">#${i + 1}</span>${esc(t.term)}
+        ${t.traffic ? `<span class="heat">${esc(t.traffic)} lượt tìm</span>` : ''}</h3>
+        <div class="status" style="margin-bottom:6px">${ago(t.time)}</div>
+        ${(t.news || []).map(n => `<a href="${esc(n.link)}" target="_blank" rel="noopener"><b>${esc(n.source)}</b> · ${esc(n.title)}</a>`).join('')}
+      </section>`).join('');
+  }
+
+  function tagEditor(key, title, desc, placeholder) {
+    return `<section class="panel"><h2>${title}</h2><p>${desc}</p>
+      <form class="row" data-k="${key}"><input placeholder="${placeholder}" maxlength="60"><button class="ibtn" type="submit">Thêm</button></form>
+      <div class="tags">${S[key].map((w, i) => `<span class="tag">${esc(w)}<button data-k="${key}" data-i="${i}" title="Xóa">×</button></span>`).join('') || '<span class="status">Chưa có</span>'}</div></section>`;
+  }
+  function renderSettings(main, d) {
+    main.innerHTML =
+      tagEditor('follow', '👁 Từ khóa theo dõi', 'Tin chứa các từ này được đánh dấu và có mục "Theo dõi" riêng. Không cần gõ dấu.', 'VD: giá vàng, iPhone, Hà Nội') +
+      tagEditor('block', '🚫 Từ khóa chặn', 'Tin chứa các từ này sẽ bị ẩn hoàn toàn.', 'VD: showbiz, xổ số') +
+      `<section class="panel"><h2>Tình trạng nguồn tin</h2><p>Lần lấy tin gần nhất: ${new Date(d.updated).toLocaleString('vi-VN')}</p>
+        <div class="status">${(d.sources || []).map(s => `<span title="${esc(s.error || '')}"><i class="dot ${s.ok ? '' : 'bad'}"></i>${esc(s.name)} (${s.count})</span>`).join('')}</div></section>
+      <section class="panel"><h2>↻ Lấy tin mới ngay khi bấm Tải lại</h2>
+        <p>${store.get('ghtoken', '') ? '✅ Đã lưu mã GitHub trên thiết bị này. Bấm ↻ Tải lại là GitHub lấy tin mới ngay (mất khoảng 1–2 phút).' : 'Chưa có mã. Hiện nút ↻ chỉ tải lại bản tin gần nhất (GitHub tự lấy tin mỗi giờ).'}
+        Mã chỉ lưu trên thiết bị này, không đưa lên trang web. Cách tạo mã: xem file HUONG-DAN.md.</p>
+        <form class="row" id="tokForm"><input type="password" placeholder="Dán mã github_pat_… vào đây" autocomplete="off"><button class="ibtn" type="submit">Lưu</button>${store.get('ghtoken', '') ? '<button class="ibtn" type="button" id="tokDel">Xóa mã</button>' : ''}</form></section>
+      <section class="panel"><h2>Dữ liệu trên thiết bị này</h2><p>Đã đọc ${S.read.size} tin · Đã ghim ${S.pins.length} tin.</p>
+        <button class="ibtn" id="clrRead">Xóa lịch sử đã đọc</button></section>`;
+    main.querySelectorAll('form[data-k]').forEach(f => f.onsubmit = e => {
+      e.preventDefault(); const k = f.dataset.k; const v = f.querySelector('input').value.trim();
+      if (v && !S[k].some(x => plain(x) === plain(v))) { S[k].push(v); store.set(k, S[k]); }
+      render(); main.querySelector(`form[data-k="${k}"] input`)?.focus();
+    });
+    main.querySelectorAll('.tag button').forEach(b => b.onclick = () => { const k = b.dataset.k; S[k].splice(+b.dataset.i, 1); store.set(k, S[k]); render(); });
+    $('#clrRead').onclick = () => { S.read.clear(); store.set('read', []); render(); };
+    $('#tokForm').onsubmit = e => { e.preventDefault(); const v = e.target.querySelector('input').value.trim(); if (v) { store.set('ghtoken', v); render(); } };
+    if ($('#tokDel')) $('#tokDel').onclick = () => { try { localStorage.removeItem('loctin.ghtoken'); } catch {} render(); };
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>
